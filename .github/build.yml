@@ -1,0 +1,35 @@
+name: Build
+
+on:
+  pull_request:
+    branches:
+      - master
+      - dev
+      - rec
+
+jobs:
+  quality-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Install Packages
+        run: npm ci
+      -
+        name: API Build Status
+        run: npm run build
+      -
+        name: Code Formatting
+        run: npm run format
+      -
+        name: Auto Commit Code Formatting
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Auto Commit Code Formatting
+          branch: ${{ github.head_ref }}
+      -
+        name: Code Linting
+        run: npm run lint

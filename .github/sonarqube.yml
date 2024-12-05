@@ -1,0 +1,34 @@
+name: SonarQube Check
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  sonarqube-check:
+    name: SonarQube Analysis
+    runs-on: ubuntu-latest
+    permissions: read-all
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Install dependencies
+        run: npm install
+      - name: Install Angular CLI
+        run: npm install -g @angular/cli
+
+
+      - name: Run tests with code coverage
+        run: ng test --code-coverage --no-progress --watch=false --browsers=ChromeHeadless
+        continue-on-error: true
+
+      - uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      - uses: sonarsource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

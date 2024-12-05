@@ -1,0 +1,58 @@
+name: CI/CD Build & Publish Image
+
+on:
+  push:
+    branches: [ "master", "dev","rec" ]
+
+env:
+  BASE_BRANCH_NAME: ${{ github.base_ref || github.ref_name }}
+  BRANCH_NAME: ${BASE_BRANCH_NAME//\//-}
+
+permissions: write-all
+
+jobs:
+  publish-ephemeria-front:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.TOKEN }}
+
+
+      - name: Replace environment variables
+        run: |
+          if [[ "${{ env.BASE_BRANCH_NAME }}" == "dev" ]]; then
+             sed -i 's~${REALM}~${{ secrets.REALM }}~g; s~${CLIENT_ID}~${{ secrets.CLIENT_ID }}~g; s~${URL}~${{ secrets.URL }}~g;s~${CLIENT_SECRET}~${{ secrets.CLIENT_SECRET }}~g;s~${BACK_URL}~${{ secrets.BACK_URL }}~g' src/environments/environment.prod.template.ts
+          elif [[ "${{ env.BASE_BRANCH_NAME }}" == "rec" ]]; then
+                sed -i 's~${REALM}~${{ secrets.REALM_REC }}~g; s~${CLIENT_ID}~${{ secrets.CLIENT_ID_REC }}~g; s~${URL}~${{ secrets.URL_REC }}~g;s~${CLIENT_SECRET}~${{ secrets.CLIENT_SECRET_REC }}~g;s~${BACK_URL}~${{ secrets.BACK_URL_REC }}~g' src/environments/environment.prod.template.ts
+          else
+                sed -i 's~${REALM}~${{ secrets.REALM_MASTER }}~g; s~${CLIENT_ID}~${{ secrets.CLIENT_ID_MASTER }}~g; s~${URL}~${{ secrets.URL_MASTER }}~g;s~${CLIENT_SECRET}~${{ secrets.CLIENT_SECRET_MASTER }}~g;s~${BACK_URL}~${{ secrets.BACK_URL_MASTER }}~g' src/environments/environment.prod.template.ts
+          fi
+      -
+        name: Build, Run & Publish Docker image
+        run: |
+          docker build -t ghcr.io/suprasanity/ephemeria-front:${{ env.BRANCH_NAME }}-latest .
+          docker run -d -p 80:80 ghcr.io/suprasanity/ephemeria-front:${{ env.BRANCH_NAME }}-latest
+          docker push ghcr.io/suprasanity/ephemeria-front:${{ env.BRANCH_NAME }}-latest
+
+      - name: Rollout
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+
+            /home/yann/rollout.sh ephemeriamaster-app
+            /home/yann/rollout.sh ephemeriadev-app
+            /home/yann/rollout.sh ephemeriarec-app
