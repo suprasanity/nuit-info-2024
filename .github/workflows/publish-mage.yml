@@ -1,0 +1,45 @@
+name: CI/CD Build & Publish Image
+
+on:
+  push:
+    branches: [ "master", "dev","rec" ]
+
+env:
+  BASE_BRANCH_NAME: ${{ github.base_ref || github.ref_name }}
+  BRANCH_NAME: ${BASE_BRANCH_NAME//\//-}
+
+permissions: write-all
+
+jobs:
+  publish-raze-front:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.TOKEN }}
+
+      -
+        name: Build, Run & Publish Docker image
+        run: |
+          docker build -t ghcr.io/suprasanity/raze-front:${{ env.BRANCH_NAME }}-latest .
+          docker push ghcr.io/suprasanity/raze-front:${{ env.BRANCH_NAME }}-latest
+
+      - name: Rollout
+        uses: appleboy/ssh-action@v0.1.9
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+
+            /home/yann/rollout.sh raze-front-app
