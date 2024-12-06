@@ -1,1 +1,39 @@
-readmi
+Bonjour,
+
+Le rendu de notre équipe AloneTeam - Université Paris 1 Panthéon Sorbonne est disponible à l'URL suivante :
+
+https://race-for-water.yannjeanmaire.com/
+
+Les deux repositories GitHub du projet sont consultables ici :
+
+https://github.com/suprasanity/nuit-info-2024
+https://github.com/williammadie/podcast-storage
+
+Des informations détaillées concernants les défis sont disponibles dans le README.md de ce projet : https://github.com/suprasanity/nuit-info-2024
+GitHub
+GitHub - suprasanity/nuit-info-2024
+Contribute to suprasanity/nuit-info-2024 development by creating an account on GitHub.
+GitHub - suprasanity/nuit-info-2024
+GitHub
+GitHub - williammadie/podcast-storage
+Contribute to williammadie/podcast-storage development by creating an account on GitHub.
+GitHub - williammadie/podcast-storage
+Nuit de l'info 2024
+Equipe AloneTeam
+
+Repositories
+Frontend: vous êtes dessus
+Backend:
+
+Défis relevés
+Défi de la nuit 2024
+
+SALVIA DéVELOPPEMENT - Mise en place de la qualité logicielle
+Pipeline CICD via scripts GitHub Actions
+Tests unitaires automatisés
+Test de complexité cyclomatique / cognitive et notation de la difficulté d'entretien du code source
+Déploiement automatisé sur l'environnement de production
+
+VIVERIS - Game Tcha : le CAPTCHA ludique
+
+Mini-jeu de rythme qui sert à récupérer des déchets dans la mer. Pour y accéder, il faut aller sur le formulaire de connexion et remplir les champs.
