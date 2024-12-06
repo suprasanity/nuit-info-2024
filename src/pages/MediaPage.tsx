@@ -4,11 +4,12 @@ import { ApiService } from "../service/ApiService";
 import '../style/MediaPage.css';
 import ErrorBoundary from '../components/ErrorBoundary';
 
-const apiService = new ApiService('https://race-for-water-api.yannjeanmaire.com');
+const apiService = new ApiService('http://localhost:8000');
 
 export const MediaPage: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [fileNames, setFileNames] = useState<string[]>([]);
+  const [, setSelectedFile] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchFileNames = async () => {
@@ -26,6 +27,7 @@ export const MediaPage: React.FC = () => {
 
     fetchFileNames();
   }, []);
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       setFile(event.target.files[0]);
@@ -49,6 +51,33 @@ export const MediaPage: React.FC = () => {
     }
   };
 
+  const handleFileClick = (fileName: string) => {
+    setSelectedFile(fileName);
+  };
+
+  const renderMediaPlayer = (fileName: string) => {
+    const fileExtension = fileName.split('.').pop();
+    const fileUrl = `http://localhost:8000/file_storage/${fileName}`;
+
+    if (fileExtension === 'mp4' || fileExtension === 'mov' || fileExtension === 'avi') {
+      return (
+          <video controls>
+            <source src={fileUrl} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+      );
+    } else if (fileExtension === 'mp3' || fileExtension === 'm4a') {
+      return (
+          <audio controls>
+            <source src={fileUrl} type="audio/mpeg" />
+            Your browser does not support the audio tag.
+          </audio>
+      );
+    } else {
+      return <p>Unsupported file type</p>;
+    }
+  };
+
   return (
       <ErrorBoundary>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -60,10 +89,12 @@ export const MediaPage: React.FC = () => {
             {fileNames.map((fileName, index) => (
                 <div
                     key={index}
-                    className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
+                    className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
+                    onClick={() => handleFileClick(fileName)}
                 >
                   <div className="p-6">
                     <h3 className="text-xl font-semibold mb-2">{fileName}</h3>
+                    {renderMediaPlayer(fileName)}
                   </div>
                 </div>
             ))}
