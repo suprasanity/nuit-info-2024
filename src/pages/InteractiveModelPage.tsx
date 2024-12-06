@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import HumanBody from '../resources/human_body.svg';
+import HumanBody from '../../public/human_body.svg';
 import '../style/InteractiveModel.css';
 
 interface OrganInfo {
