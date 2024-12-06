@@ -4,7 +4,7 @@ import { InteractiveModel } from '../components/InteractiveModel';
 import { PodcastSection } from '../components/PodcastSection';
 import { QRCode } from '../components/QRCode';
 import '../style/Homepage.css';
-
+//Push stp
 export const HomePage = () => {
     return (
         <div className="homepage">
