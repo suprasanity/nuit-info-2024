@@ -5,6 +5,7 @@
     height: auto; /* Assurez-vous que la hauteur de l'image s'ajuste automatiquement */
     max-height: 75vh; /* Limite la hauteur maximale pour éviter que l'image soit trop grande */
     margin-top: 2vh;
+    position: relative;
 }
 
 /* Boutons interactifs (les petits points sur le corps) */
@@ -14,6 +15,7 @@
     height: 1vw; /* Hauteur en fonction de la largeur */
     min-width: 17px; /* Assurez-vous qu'ils sont visibles sur tous les écrans */
     min-height: 17px; /* Assurez-vous qu'ils sont visibles sur tous les écrans */
+    position: absolute;
 }
 
 /* Infobulle pour l'organe actif */
@@ -25,28 +27,28 @@
 }
 
 .brain.absolute{
-    left: 22vw;
-    top: 5vh;
+    left: 50%;
+    top: 5%;
 }
 .heart.absolute{
-    left: 22vw;
-    top: 23vh;
+    left: 47.5%;
+    top: 25%;
 }
 .lungs.absolute{
-    left: 20vw;
-    top: 20vh;
+    left: 50%;
+    top: 26%;
 }
 .stomach.absolute{
-    left: 23vw;
-    top: 30vh;
+    left: 51%;
+    top: 35%;
 }
 .kidneys.absolute{
-    left: 24vw;
-    top: 34vh;
+    left: 52%;
+    top: 40%;
 }
 .large_intestine.absolute{
-    left: 20vw;
-    top: 36vh;
+    left: 47.5%;
+    top: 43%;
 }
 
 /* Ajustements pour les écrans plus petits (téléphones et tablettes) */
@@ -68,28 +70,28 @@
         min-width: 200px;
     }
     .brain.absolute{
-        left: 44.5vw;
-        top: 7vh;
+        left: 49.5%;
+        top: 17%;
     }
     .heart.absolute{
-        left: 46vw;
-        top: 20vh;
+        left: 50%;
+        top: 33%;
     }
     .lungs.absolute{
-        left: 41vw;
-        top: 22vh;
+        left: 41%;
+        top: 22%;
     }
     .stomach.absolute{
-        left: 48vw;
-        top: 27.5vh;
+        left: 53%;
+        top: 40.5%;
     }
     .kidneys.absolute{
-        left: 52vw;
-        top: 30vh;
+        left: 56%;
+        top: 44.5%;
     }
     .large_intestine.absolute{
-        left: 40vw;
-        top: 32vh;
+        left: 44%;
+        top: 47.5%;
     }
 }
 

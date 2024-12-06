@@ -74,8 +74,8 @@ export const InteractiveModelPage = () => {
           <div
             className="absolute bg-white p-4 rounded-lg shadow-lg max-w-xs"
             style={{
-              left: `43vw`,
-              top: `10vh`,
+              left: `43%`,
+              top: `50%`,
               minWidth: `30vw`,
               transform: 'translateX(-50%)'
             }}
