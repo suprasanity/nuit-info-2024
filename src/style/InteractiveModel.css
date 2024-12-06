@@ -111,3 +111,10 @@
         min-width: 220px;
     }
 }
+
+h1.text-3xl.font-bold.text-center.mb-12.text-blue-900 {
+    border: solid 0.4vh rgb(30 58 138);
+    padding: 1vh 1vw;
+    border-radius: 0.7vw;
+}
+
