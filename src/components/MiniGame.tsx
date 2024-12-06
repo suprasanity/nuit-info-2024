@@ -14,29 +14,44 @@ export const MiniGame: React.FC = () => {
   const perfectSoundRef = useRef<HTMLAudioElement | null>(null);
   const greatSoundRef = useRef<HTMLAudioElement | null>(null);
   const missSoundRef = useRef<HTMLAudioElement | null>(null);
+  const noteImageRef = useRef<HTMLImageElement | null>(null);
 
   const [gameStarted, setGameStarted] = useState(false);
   const [showModal, setShowModal] = useState(true);
+  const [gameEnded, setGameEnded] = useState(false);
+  const [gameWon, setGameWon] = useState<boolean | null>(null);
+  const [countdown, setCountdown] = useState<number | null>(null); // null => pas de countdown en cours
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = '/trash.png';
+    img.onload = () => {
+      noteImageRef.current = img;
+    };
+  }, []);
 
   const initialNotes: Note[] = [
-    {time: 600, x: 400, y: 300, radius: 50, state: 'pending'},
-    {time: 1100, x: 200, y: 200, radius: 40, state: 'pending'},
-    {time: 1300, x: 600, y: 400, radius: 60, state: 'pending'},
-    {time: 1800, x: 200, y: 200, radius: 40, state: 'pending'},
-    {time: 2500, x: 200, y: 200, radius: 40, state: 'pending'},
-    {time: 3000, x: 200, y: 200, radius: 40, state: 'pending'},
-    {time: 3200, x: 200, y: 200, radius: 40, state: 'pending'},
-    {time: 3700, x: 200, y: 200, radius: 40, state: 'pending'},
-    {time: 4400, x: 200, y: 200, radius: 40, state: 'pending'},
-    {time: 4900, x: 200, y: 200, radius: 40, state: 'pending'},
-    {time: 5100, x: 200, y: 200, radius: 40, state: 'pending'},
-    {time: 5600, x: 200, y: 200, radius: 40, state: 'pending'},
-    {time: 6300, x: 200, y: 200, radius: 40, state: 'pending'},
-    {time: 6530, x: 200, y: 200, radius: 40, state: 'pending'},
-    {time: 6760, x: 200, y: 200, radius: 40, state: 'pending'},
-    {time: 6990, x: 400, y: 300, radius: 50, state: 'pending'},
-    {time: 7450, x: 200, y: 200, radius: 40, state: 'pending'},
-    {time: 7670, x: 200, y: 200, radius: 40, state: 'pending'}
+    { time: 300,  x: 400, y: 300, radius: 50, state: 'pending' },
+    { time: 700,  x: 600, y: 300, radius: 50, state: 'pending' },
+    { time: 900,  x: 200, y: 300, radius: 50, state: 'pending' },
+    { time: 1400, x: 400, y: 300, radius: 50, state: 'pending' },
+
+    { time: 2100, x: 400, y: 300, radius: 50, state: 'pending' },
+    { time: 2600, x: 400, y: 400, radius: 50, state: 'pending' },
+    { time: 2800, x: 400, y: 200, radius: 50, state: 'pending' },
+    { time: 3300, x: 400, y: 300, radius: 50, state: 'pending' },
+
+    { time: 4000, x: 700, y: 300, radius: 50, state: 'pending' },
+    { time: 4400, x: 650, y: 350, radius: 50, state: 'pending' },
+    { time: 4600, x: 400, y: 400, radius: 50, state: 'pending' },
+    { time: 5100, x: 150, y: 350, radius: 50, state: 'pending' },
+
+    { time: 5800, x: 300, y: 100, radius: 50, state: 'pending' },
+    { time: 6030, x: 320, y: 200, radius: 50, state: 'pending' },
+    { time: 6260, x: 340, y: 100, radius: 50, state: 'pending' },
+    { time: 6500, x: 360, y: 200, radius: 50, state: 'pending' },
+    { time: 6900, x: 400, y: 100, radius: 50, state: 'pending' },
+    { time: 7100, x: 400, y: 100, radius: 50, state: 'pending' }
   ];
 
   const notesRef = useRef<Note[]>([...initialNotes]);
@@ -51,19 +66,15 @@ export const MiniGame: React.FC = () => {
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
 
-    // Dimensions internes du canvas (fixes)
     const internalWidth = canvas.width;
     const internalHeight = canvas.height;
 
-    // Dimensions affichées
     const displayWidth = rect.width;
     const displayHeight = rect.height;
 
-    // Calcul du ratio
     const scaleX = internalWidth / displayWidth;
     const scaleY = internalHeight / displayHeight;
 
-    // Convertir la position souris en coordonnées internes du canvas
     const x = (e.clientX - rect.left) * scaleX;
     const y = (e.clientY - rect.top) * scaleY;
 
@@ -80,9 +91,29 @@ export const MiniGame: React.FC = () => {
     };
   }, [handleMouseMove]);
 
+  // Effet pour gérer le compte à rebours
+  useEffect(() => {
+    let timerId: NodeJS.Timeout;
+    if (countdown !== null && countdown > 0) {
+      timerId = setTimeout(() => {
+        setCountdown(countdown - 1);
+      }, 1000);
+    } else if (countdown === 0) {
+      // Quand le compte à rebours atteint 0, on démarre le jeu
+      startRealGame();
+      setCountdown(null); // On remet à null pour indiquer que le compte à rebours est fini
+    }
+
+    return () => {
+      if (timerId) clearTimeout(timerId);
+    };
+  }, [countdown]);
+
   const resetGame = useCallback(() => {
     notesRef.current = initialNotes.map(note => ({...note, state: 'pending'}));
     scoreRef.current = 0;
+    setGameEnded(false);
+    setGameWon(null);
     if (bgMusicRef.current) {
       bgMusicRef.current.pause();
       bgMusicRef.current.currentTime = 0;
@@ -92,7 +123,8 @@ export const MiniGame: React.FC = () => {
     }
   }, [initialNotes]);
 
-  const startGame = useCallback(() => {
+  // Fonction qui démarre réellement le jeu, après le countdown
+  const startRealGame = useCallback(() => {
     if (bgMusicRef.current) {
       bgMusicRef.current.currentTime = 0;
       bgMusicRef.current.play().catch(err => {
@@ -101,6 +133,12 @@ export const MiniGame: React.FC = () => {
     }
     startTimeRef.current = performance.now();
     animationIdRef.current = requestAnimationFrame(gameLoop);
+  }, []);
+
+  // Fonction appelée quand on clique sur Play / Replay
+  // Au lieu de démarrer la musique directement, on lance un compte à rebours.
+  const startGameWithCountdown = useCallback(() => {
+    setCountdown(3); // 3 secondes de compte à rebours
   }, []);
 
   useEffect(() => {
@@ -114,16 +152,13 @@ export const MiniGame: React.FC = () => {
     };
   }, []);
 
-  // Helper functions:
-
   const drawNote = (ctx: CanvasRenderingContext2D, note: Note, innerRadius: number) => {
-    // Outer circle
-    ctx.strokeStyle = '#FFF';
-    ctx.beginPath();
-    ctx.arc(note.x, note.y, note.radius, 0, 2 * Math.PI);
-    ctx.stroke();
+    const img = noteImageRef.current;
+    if (!img) return;
 
-    // Inner circle
+    const diameter = note.radius * 2;
+    ctx.drawImage(img, note.x - note.radius, note.y - note.radius, diameter, diameter);
+
     ctx.strokeStyle = '#0F0';
     ctx.beginPath();
     ctx.arc(note.x, note.y, innerRadius, 0, 2 * Math.PI);
@@ -164,21 +199,19 @@ export const MiniGame: React.FC = () => {
   };
 
   const updateNoteState = (note: Note, elapsed: number) => {
-    const growTime = 500;
+    const growTime = 700;
     const noteElapsed = elapsed - note.time;
-    if (noteElapsed < 0) return; // Not time to show note yet
+    if (noteElapsed < 0) return;
 
     const idealTime = note.time + growTime;
     const timeDiff = Math.abs(elapsed - idealTime);
 
-    // If it's well past the ideal time, it's a miss
     if (noteElapsed > growTime + 100) {
       note.state = 'done';
       markMiss();
       return;
     }
 
-    // If we are in the hitting window
     if (checkHit(note, timeDiff)) {
       awardScore(timeDiff);
       note.state = 'done';
@@ -186,12 +219,12 @@ export const MiniGame: React.FC = () => {
   };
 
   const renderNotes = (ctx: CanvasRenderingContext2D, elapsed: number) => {
-    const growTime = 500;
+    const growTime = 700;
     for (let note of notesRef.current) {
       if (note.state !== 'pending') continue;
 
       const noteElapsed = elapsed - note.time;
-      if (noteElapsed < 0) continue; // Not visible yet
+      if (noteElapsed < 0) continue;
 
       const innerRadius = calculateInnerRadius(note.radius, noteElapsed, growTime);
       drawNote(ctx, note, innerRadius);
@@ -202,11 +235,16 @@ export const MiniGame: React.FC = () => {
   const allNotesDone = () => notesRef.current.every(n => n.state === 'done');
 
   const endGame = (ctx: CanvasRenderingContext2D) => {
-    ctx.fillText("Partie terminée !", 10, 60);
     if (bgMusicRef.current) {
       bgMusicRef.current.pause();
     }
-    // Plus de setGameEnded ici, car on a supprimé cet état
+    setGameEnded(true);
+    const finalScore = scoreRef.current;
+    if (finalScore >= 500) {
+      setGameWon(true);
+    } else {
+      setGameWon(false);
+    }
   };
 
   const gameLoop = useCallback((now: number) => {
@@ -238,13 +276,11 @@ export const MiniGame: React.FC = () => {
 
   const handlePlayClick = () => {
     if (!gameStarted) {
-      // Première partie
       setGameStarted(true);
-      startGame();
+      startGameWithCountdown();
     } else {
-      // Replay, même en cours de partie
       resetGame();
-      startGame();
+      startGameWithCountdown();
     }
   };
 
@@ -253,7 +289,6 @@ export const MiniGame: React.FC = () => {
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center px-4">
           <div className="relative bg-gray-900 text-white rounded shadow-lg p-4 w-full max-w-2xl mx-auto">
-            {/* Close button */}
             <button
               onClick={() => setShowModal(false)}
               className="absolute top-2 right-2 text-white hover:text-red-500 font-bold"
@@ -261,14 +296,12 @@ export const MiniGame: React.FC = () => {
               X
             </button>
 
-            {/* Instructions */}
             <div className="mb-4">
               <h2 className="text-xl font-bold mb-2">Instructions du jeu</h2>
-              <p>Déplacez votre souris sur les cercles quand ils ont atteint leur taille maximale pour marquer des points.</p>
-              <p>Essayez d'obtenir un "perfect" pour un score maximum !</p>
+              <p>Déplacez votre souris sur l'image quand le cercle d'approche est à son maximum.</p>
+              <p>Un compte à rebours démarrera avant le début du jeu, pour synchroniser la musique avec les cercles.</p>
             </div>
 
-            {/* Game Controls */}
             <div className="mb-4 flex justify-center">
               {!gameStarted && (
                 <button
@@ -290,17 +323,48 @@ export const MiniGame: React.FC = () => {
               )}
             </div>
 
-            {/* Canvas Container Responsive */}
             <div className="flex flex-col items-center justify-center bg-black">
-              <div className="w-full max-w-full flex justify-center overflow-hidden">
+              <div className="relative w-full max-w-full flex justify-center overflow-hidden" style={{height: '600px'}}>
                 <canvas
                   ref={canvasRef}
                   id="gameCanvas"
                   width={800}
                   height={600}
                   className="w-full max-w-full h-auto"
-                  style={{ background: '#000' }}
+                  style={{
+                    backgroundImage: 'url("/background.jpeg")',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                  }}
                 ></canvas>
+
+                {countdown !== null && countdown > 0 && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
+                    <h2 className="text-6xl font-bold">{countdown}</h2>
+                  </div>
+                )}
+
+                {gameEnded && (
+                  <div className="absolute inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center text-white px-4">
+                    {gameWon ? (
+                      <div className="text-center">
+                        <h2 className="text-4xl font-bold mb-4">Victoire !</h2>
+                        <p className="mb-4">Bravo, vous avez obtenu un score de {scoreRef.current} !</p>
+                      </div>
+                    ) : (
+                      <div className="text-center">
+                        <h2 className="text-4xl font-bold mb-4">Défaite</h2>
+                        <p className="mb-4">Votre score est de {scoreRef.current}, réessayez !</p>
+                      </div>
+                    )}
+                    <button
+                      onClick={handlePlayClick}
+                      className="mt-5 p-3 bg-blue-600 text-white rounded font-bold hover:bg-blue-700"
+                    >
+                      Rejouer
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
