@@ -4,12 +4,12 @@ import { ApiService } from "../service/ApiService";
 import '../style/MediaPage.css';
 import ErrorBoundary from '../components/ErrorBoundary';
 
-const apiService = new ApiService('https://race-for-water-api.yannjeanmaire.com');
+const apiService = new ApiService('http://localhost:8000');
 
 export const MediaPage: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [fileNames, setFileNames] = useState<string[]>([]);
-  const [selectedFile, setSelectedFile] = useState<string | null>(null);
+  const [, setSelectedFile] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchFileNames = async () => {
@@ -57,7 +57,7 @@ export const MediaPage: React.FC = () => {
 
   const renderMediaPlayer = (fileName: string) => {
     const fileExtension = fileName.split('.').pop();
-    const fileUrl = `https://race-for-water.yannjeanmaire.com/file_storage/${fileName}`;
+    const fileUrl = `https://race-for-water-api.yannjeanmaire.com/file_storage/${fileName}`;
 
     if (fileExtension === 'mp4' || fileExtension === 'mov' || fileExtension === 'avi') {
       return (
