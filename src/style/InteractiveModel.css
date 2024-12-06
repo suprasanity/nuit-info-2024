@@ -1,0 +1,21 @@
+.interactive-model .relative img {
+    z-index:1;
+    height: 75vh;
+    margin-top: 2vh;
+}
+
+.interactive-model .absolute button {
+    z-index: 2;
+}
+
+.interactive-model .relative .absolute.rounded-lg.shadow-lg.max-w-xs {
+    z-index: 3;
+}
+
+.interactive-model .max-w-7xl.mx-auto.px-4.sm\:px-6.lg\:px-8.py-12 {
+    max-height: 100vh;
+}
+.interactive-model .relative.w-full.max-w-2xl.mx-auto,
+.interactive-model .absolute.inset-0.bg-gray-100.rounded-lg {
+    max-height: 80vh;
+}

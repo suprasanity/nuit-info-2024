@@ -1,6 +1,7 @@
 import React from 'react';
 import { Brain, Heart, Stethoscope, Waves, Fish, Leaf } from 'lucide-react';
 import { ComparisonCard } from './ComparisonCard';
+import {Link} from "react-router-dom";
 
 const comparisons = [
   {
@@ -37,6 +38,14 @@ export const InteractiveModel = () => {
             />
           ))}
         </div>
+      </div>
+      <div className="text-center mt-8">
+        <Link
+            to="/modele-interactif"
+            className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          En savoir plus
+        </Link>
       </div>
     </div>
   );

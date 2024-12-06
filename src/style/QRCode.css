@@ -1,0 +1,12 @@
+.icon-container{
+    display: flex;
+    justify-content:space-between;
+}
+.icon-container .fa-xmark:hover {
+    transform:scale(1.5);
+    cursor:pointer;
+}
+.icon-container .fa-xmark {
+    transition:0.5s;
+
+}
