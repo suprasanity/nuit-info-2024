@@ -16,6 +16,8 @@ export const MiniGame: React.FC = () => {
   const missSoundRef = useRef<HTMLAudioElement | null>(null);
 
   const [gameStarted, setGameStarted] = useState(false);
+  const [gameEnded, setGameEnded] = useState(false);
+  const [showModal, setShowModal] = useState(true);
 
   const initialNotes: Note[] = [
     {time: 600, x: 400, y: 300, radius: 50, state: 'pending'},
@@ -38,7 +40,7 @@ export const MiniGame: React.FC = () => {
     {time: 7670, x: 200, y: 200, radius: 40, state: 'pending'}
   ];
 
-  const notesRef = useRef<Note[]>(initialNotes);
+  const notesRef = useRef<Note[]>([...initialNotes]);
   const scoreRef = useRef(0);
   const startTimeRef = useRef<number | null>(null);
   const animationIdRef = useRef<number | null>(null);
@@ -46,9 +48,28 @@ export const MiniGame: React.FC = () => {
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!canvasRef.current) return;
-    const rect = canvasRef.current.getBoundingClientRect();
-    mousePosRef.current.x = e.clientX - rect.left;
-    mousePosRef.current.y = e.clientY - rect.top;
+
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+
+    // Dimensions internes du canvas (fixes)
+    const internalWidth = canvas.width;
+    const internalHeight = canvas.height;
+
+    // Dimensions affichées
+    const displayWidth = rect.width;
+    const displayHeight = rect.height;
+
+    // Calcul du ratio
+    const scaleX = internalWidth / displayWidth;
+    const scaleY = internalHeight / displayHeight;
+
+    // Convertir la position souris en coordonnées internes du canvas
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
+
+    mousePosRef.current.x = x;
+    mousePosRef.current.y = y;
   }, []);
 
   useEffect(() => {
@@ -60,9 +81,20 @@ export const MiniGame: React.FC = () => {
     };
   }, [handleMouseMove]);
 
+  const resetGame = useCallback(() => {
+    notesRef.current = initialNotes.map(note => ({...note, state: 'pending'}));
+    scoreRef.current = 0;
+    setGameEnded(false);
+    if (bgMusicRef.current) {
+      bgMusicRef.current.pause();
+      bgMusicRef.current.currentTime = 0;
+    }
+    if (animationIdRef.current) {
+      cancelAnimationFrame(animationIdRef.current);
+    }
+  }, [initialNotes]);
+
   const startGame = useCallback(() => {
-    if (gameStarted) return;
-    setGameStarted(true);
     if (bgMusicRef.current) {
       bgMusicRef.current.currentTime = 0;
       bgMusicRef.current.play().catch(err => {
@@ -70,8 +102,19 @@ export const MiniGame: React.FC = () => {
       });
     }
     startTimeRef.current = performance.now();
-    requestAnimationFrame(gameLoop);
-  }, [gameStarted]);
+    animationIdRef.current = requestAnimationFrame(gameLoop);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (animationIdRef.current) {
+        cancelAnimationFrame(animationIdRef.current);
+      }
+      if (bgMusicRef.current) {
+        bgMusicRef.current.pause();
+      }
+    };
+  }, []);
 
   // Helper functions:
 
@@ -165,6 +208,7 @@ export const MiniGame: React.FC = () => {
     if (bgMusicRef.current) {
       bgMusicRef.current.pause();
     }
+    setGameEnded(true);
   };
 
   const gameLoop = useCallback((now: number) => {
@@ -194,55 +238,96 @@ export const MiniGame: React.FC = () => {
     animationIdRef.current = requestAnimationFrame(gameLoop);
   }, []);
 
-  useEffect(() => {
-    return () => {
-      if (animationIdRef.current) {
-        cancelAnimationFrame(animationIdRef.current);
-      }
-      if (bgMusicRef.current) {
-        bgMusicRef.current.pause();
-      }
-    };
-  }, []);
+  const handlePlayClick = () => {
+    if (!gameStarted) {
+      // Première partie
+      setGameStarted(true);
+      startGame();
+    } else {
+      // Replay, même en cours de partie
+      resetGame();
+      startGame();
+    }
+  };
 
   return (
-    <div className="flex flex-col items-center justify-center bg-black h-full w-full">
-      {!gameStarted && (
-        <button
-          onClick={startGame}
-          id="startButton"
-          className="m-5 p-3 bg-blue-600 text-white rounded font-bold hover:bg-blue-700"
-        >
-          Play
-        </button>
+    <>
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center px-4">
+          <div className="relative bg-gray-900 text-white rounded shadow-lg p-4 w-full max-w-2xl mx-auto">
+            {/* Close button */}
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-2 right-2 text-white hover:text-red-500 font-bold"
+            >
+              X
+            </button>
+
+            {/* Instructions */}
+            <div className="mb-4">
+              <h2 className="text-xl font-bold mb-2">Instructions du jeu</h2>
+              <p>Déplacez votre souris sur les cercles quand ils ont atteint leur taille maximale pour marquer des points.</p>
+              <p>Essayez d'obtenir un "perfect" pour un score maximum !</p>
+            </div>
+
+            {/* Game Controls */}
+            <div className="mb-4 flex justify-center">
+              {!gameStarted && (
+                <button
+                  onClick={handlePlayClick}
+                  id="startButton"
+                  className="m-5 p-3 bg-blue-600 text-white rounded font-bold hover:bg-blue-700"
+                >
+                  Play
+                </button>
+              )}
+
+              {gameStarted && (
+                <button
+                  onClick={handlePlayClick}
+                  className="m-5 p-3 bg-blue-600 text-white rounded font-bold hover:bg-blue-700"
+                >
+                  Replay
+                </button>
+              )}
+            </div>
+
+            {/* Canvas Container Responsive */}
+            <div className="flex flex-col items-center justify-center bg-black">
+              <div className="w-full max-w-full flex justify-center overflow-hidden">
+                <canvas
+                  ref={canvasRef}
+                  id="gameCanvas"
+                  width={800}
+                  height={600}
+                  className="w-full max-w-full h-auto"
+                  style={{ background: '#000' }}
+                ></canvas>
+              </div>
+            </div>
+
+            <audio ref={bgMusicRef} className="hidden" src="/sounds/captchaMusic.mp3" preload="auto" controls>
+              <track kind="captions" src="/captions_en.vtt" srcLang="en" label="English" default />
+              Your browser does not support the audio element.
+            </audio>
+
+            <audio ref={perfectSoundRef} className="hidden" src="/sounds/hitnormal.wav" preload="auto" controls>
+              <track kind="captions" src="/captions_en.vtt" srcLang="en" label="English" default />
+              Your browser does not support the audio element.
+            </audio>
+
+            <audio ref={greatSoundRef} className="hidden" src="/sounds/hitnormal.wav" preload="auto" controls>
+              <track kind="captions" src="/captions_en.vtt" srcLang="en" label="English" default />
+              Your browser does not support the audio element.
+            </audio>
+
+            <audio ref={missSoundRef} className="hidden" src="/sounds/combobreak.wav" preload="auto" controls>
+              <track kind="captions" src="/captions_en.vtt" srcLang="en" label="English" default />
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+        </div>
       )}
-      <canvas
-        ref={canvasRef}
-        id="gameCanvas"
-        width={800}
-        height={600}
-        style={{ background: '#000', display: 'block', margin: '0 auto' }}
-      ></canvas>
-
-      <audio ref={bgMusicRef} className="hidden"    src="/sounds/captchaMusic.mp3" preload="auto" controls>
-        <track kind="captions" src="/captions_en.vtt" srcLang="en" label="English" default />
-        Your browser does not support the audio element.
-      </audio>
-
-      <audio ref={perfectSoundRef} className="hidden" src="/sounds/hitnormal.wav" preload="auto" controls>
-        <track kind="captions" src="/captions_en.vtt" srcLang="en" label="English" default />
-        Your browser does not support the audio element.
-      </audio>
-
-      <audio ref={greatSoundRef} className="hidden" src="/sounds/hitnormal.wav" preload="auto" controls>
-        <track kind="captions" src="/captions_en.vtt" srcLang="en" label="English" default />
-        Your browser does not support the audio element.
-      </audio>
-
-      <audio ref={missSoundRef} className="hidden" src="/sounds/combobreak.wav" preload="auto" controls>
-        <track kind="captions" src="/captions_en.vtt" srcLang="en" label="English" default />
-        Your browser does not support the audio element.
-      </audio>
-    </div>
+    </>
   );
 };
