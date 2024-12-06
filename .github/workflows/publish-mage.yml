@@ -11,7 +11,7 @@ env:
 permissions: write-all
 
 jobs:
-  publish-raze-front:
+  publish-racee-front:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -29,8 +29,8 @@ jobs:
       -
         name: Build, Run & Publish Docker image
         run: |
-          docker build -t ghcr.io/suprasanity/raze-front:${{ env.BRANCH_NAME }}-latest .
-          docker push ghcr.io/suprasanity/raze-front:${{ env.BRANCH_NAME }}-latest
+          docker build -t ghcr.io/suprasanity/race-front:${{ env.BRANCH_NAME }}-latest .
+          docker push ghcr.io/suprasanity/race-front:${{ env.BRANCH_NAME }}-latest
 
       - name: Rollout
         uses: appleboy/ssh-action@v0.1.9
@@ -42,4 +42,4 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
 
-            /home/yann/rollout.sh raze-front-app
+            /home/yann/rollout.sh race-front-app
