@@ -42,4 +42,4 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
 
-            /home/yann/rollout.sh race-front-app
+            /home/yann/rollout.sh raze-front
