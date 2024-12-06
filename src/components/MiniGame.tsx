@@ -16,7 +16,6 @@ export const MiniGame: React.FC = () => {
   const missSoundRef = useRef<HTMLAudioElement | null>(null);
 
   const [gameStarted, setGameStarted] = useState(false);
-  const [gameEnded, setGameEnded] = useState(false);
   const [showModal, setShowModal] = useState(true);
 
   const initialNotes: Note[] = [
@@ -84,7 +83,6 @@ export const MiniGame: React.FC = () => {
   const resetGame = useCallback(() => {
     notesRef.current = initialNotes.map(note => ({...note, state: 'pending'}));
     scoreRef.current = 0;
-    setGameEnded(false);
     if (bgMusicRef.current) {
       bgMusicRef.current.pause();
       bgMusicRef.current.currentTime = 0;
@@ -208,7 +206,7 @@ export const MiniGame: React.FC = () => {
     if (bgMusicRef.current) {
       bgMusicRef.current.pause();
     }
-    setGameEnded(true);
+    // Plus de setGameEnded ici, car on a supprimé cet état
   };
 
   const gameLoop = useCallback((now: number) => {
