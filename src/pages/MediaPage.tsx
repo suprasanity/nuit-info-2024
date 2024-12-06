@@ -11,21 +11,21 @@ export const MediaPage: React.FC = () => {
   const [fileNames, setFileNames] = useState<string[]>([]);
   const [, setSelectedFile] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchFileNames = async () => {
-      try {
-        const response = await apiService.get('/file_storage/all');
-        if (response && Array.isArray(response.files)) {
-          setFileNames(response.files);
-        } else {
-          console.error('Expected an array of file names');
-        }
-      } catch (error) {
-        console.error('Failed to fetch file names:', error);
+  const fetchFileNames = async () => {
+    try {
+      const response = await apiService.get('/file_storage/all');
+      if (response && Array.isArray(response.files)) {
+        setFileNames(response.files);
+      } else {
+        console.error('Expected an array of file names');
       }
-    };
+    } catch (error) {
+      console.error('Failed to fetch file names:', error);
+    }
+  };
 
-    fetchFileNames();
+  useEffect(() => {
+    fetchFileNames().then(r => r);
   }, []);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,6 +42,7 @@ export const MediaPage: React.FC = () => {
       try {
         await apiService.post('/file_storage', formData);
         alert('File uploaded successfully');
+        fetchFileNames(); // Fetch file names after successful upload
       } catch (error) {
         console.error('File upload failed:', error);
         alert('File upload failed');
