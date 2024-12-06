@@ -23,8 +23,9 @@ export const QRCode = () => {
                     />
                 </div>
                 <p className="text-sm text-gray-600">Scannez pour voir sur mobile</p>
-                <img src="/qrcode.png" alt="QR Code" className="w-24 h-24 mt-2 rounded"/>
-                <div className="w-24 h-24 bg-gray-200 mt-2 rounded"></div>
+                <div className="w-24 h-24 bg-gray-200 mt-2 rounded">
+                    <img src="/qrcode.png" alt="QR Code" className="w-24 h-24 mt-2 rounded"/>
+                </div>
             </div>
         </div>
     );
