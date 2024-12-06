@@ -224,22 +224,22 @@ export const MiniGame: React.FC = () => {
         style={{ background: '#000', display: 'block', margin: '0 auto' }}
       ></canvas>
 
-      <audio ref={bgMusicRef} src="/sounds/captchaMusic.mp3" preload="auto" controls>
+      <audio ref={bgMusicRef} className="hidden"    src="/sounds/captchaMusic.mp3" preload="auto" controls>
         <track kind="captions" src="/captions_en.vtt" srcLang="en" label="English" default />
         Your browser does not support the audio element.
       </audio>
 
-      <audio ref={perfectSoundRef} src="/sounds/hitnormal.wav" preload="auto" controls>
+      <audio ref={perfectSoundRef} className="hidden" src="/sounds/hitnormal.wav" preload="auto" controls>
         <track kind="captions" src="/captions_en.vtt" srcLang="en" label="English" default />
         Your browser does not support the audio element.
       </audio>
 
-      <audio ref={greatSoundRef} src="/sounds/hitnormal.wav" preload="auto" controls>
+      <audio ref={greatSoundRef} className="hidden" src="/sounds/hitnormal.wav" preload="auto" controls>
         <track kind="captions" src="/captions_en.vtt" srcLang="en" label="English" default />
         Your browser does not support the audio element.
       </audio>
 
-      <audio ref={missSoundRef} src="/sounds/combobreak.wav" preload="auto" controls>
+      <audio ref={missSoundRef} className="hidden" src="/sounds/combobreak.wav" preload="auto" controls>
         <track kind="captions" src="/captions_en.vtt" srcLang="en" label="English" default />
         Your browser does not support the audio element.
       </audio>
