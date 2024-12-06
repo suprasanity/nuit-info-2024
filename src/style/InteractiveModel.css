@@ -69,27 +69,27 @@
     }
     .brain.absolute{
         left: 44.5vw;
-        top: 7vh;
+        top: 21vh;
     }
     .heart.absolute{
         left: 46vw;
-        top: 20vh;
+        top: 28vh;
     }
     .lungs.absolute{
         left: 41vw;
-        top: 22vh;
+        top: 30vh;
     }
     .stomach.absolute{
         left: 48vw;
-        top: 27.5vh;
+        top: 35.5vh;
     }
     .kidneys.absolute{
         left: 52vw;
-        top: 30vh;
+        top: 38vh;
     }
     .large_intestine.absolute{
         left: 40vw;
-        top: 32vh;
+        top: 40vh;
     }
 }
 
