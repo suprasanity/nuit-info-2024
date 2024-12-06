@@ -1,0 +1,13 @@
+form.space-y-6 input {
+    color: black;
+    padding-left: 0.5vw;
+    border: solid 0.1vw black;
+}
+
+form.space-y-6 svg:hover {
+    transform:scale(1.5);
+    cursor:pointer;
+}
+form.space-y-6 svg .fa-xmark {
+    transition:0.5s;
+}

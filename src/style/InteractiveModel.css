@@ -1,0 +1,111 @@
+/* Image du corps humain (SVG) */
+.interactive-model .relative img {
+    z-index: 1;
+    width: 100%; /* La largeur est maintenant 100% pour être responsive */
+    height: auto; /* Assurez-vous que la hauteur de l'image s'ajuste automatiquement */
+    max-height: 75vh; /* Limite la hauteur maximale pour éviter que l'image soit trop grande */
+    margin-top: 2vh;
+}
+
+/* Boutons interactifs (les petits points sur le corps) */
+.interactive-model .absolute button {
+    z-index: 2;
+    width: 1vw; /* Largeur en fonction de la taille de l'écran */
+    height: 1vw; /* Hauteur en fonction de la largeur */
+    min-width: 17px; /* Assurez-vous qu'ils sont visibles sur tous les écrans */
+    min-height: 17px; /* Assurez-vous qu'ils sont visibles sur tous les écrans */
+}
+
+/* Infobulle pour l'organe actif */
+.interactive-model .relative .absolute.rounded-lg.shadow-lg.max-w-xs {
+    z-index: 3;
+    max-width: 90%; /* Pour garantir que l'infobulle ne dépasse pas de l'écran */
+    width: auto;
+    min-width: 250px; /* Minimise la taille de l'infobulle pour qu'elle soit lisible même sur les petits écrans */
+}
+
+.brain.absolute{
+    left: 22vw;
+    top: 5vh;
+}
+.heart.absolute{
+    left: 22vw;
+    top: 23vh;
+}
+.lungs.absolute{
+    left: 20vw;
+    top: 20vh;
+}
+.stomach.absolute{
+    left: 23vw;
+    top: 30vh;
+}
+.kidneys.absolute{
+    left: 24vw;
+    top: 34vh;
+}
+.large_intestine.absolute{
+    left: 20vw;
+    top: 36vh;
+}
+
+/* Ajustements pour les écrans plus petits (téléphones et tablettes) */
+@media (max-width: 768px) {
+    /* Image du corps humain (SVG) */
+    .interactive-model .relative img {
+        height: 60vh; /* Sur petits écrans, réduire la hauteur */
+    }
+
+    /* Boutons interactifs */
+    .interactive-model .absolute button {
+        width: 6vw; /* Boutons plus grands sur les petits écrans */
+        height: 6vw;
+    }
+
+    /* Infobulle pour l'organe actif */
+    .interactive-model .relative .absolute.rounded-lg.shadow-lg.max-w-xs {
+        max-width: 80%; /* Réduit la largeur maximale de l'infobulle sur petits écrans */
+        min-width: 200px;
+    }
+    .brain.absolute{
+        left: 44.5vw;
+        top: 7vh;
+    }
+    .heart.absolute{
+        left: 46vw;
+        top: 20vh;
+    }
+    .lungs.absolute{
+        left: 41vw;
+        top: 22vh;
+    }
+    .stomach.absolute{
+        left: 48vw;
+        top: 27.5vh;
+    }
+    .kidneys.absolute{
+        left: 52vw;
+        top: 30vh;
+    }
+    .large_intestine.absolute{
+        left: 40vw;
+        top: 32vh;
+    }
+}
+
+/* Pour les tablettes ou écrans moyens */
+@media (max-width: 1024px) {
+    .interactive-model .relative img {
+        height: 65vh; /* Ajuste la taille de l'image */
+    }
+
+    .interactive-model .absolute button {
+        width: 5vw; /* Boutons un peu plus grands sur les tablettes */
+        height: 5vw;
+    }
+
+    .interactive-model .relative .absolute.rounded-lg.shadow-lg.max-w-xs {
+        max-width: 85%;
+        min-width: 220px;
+    }
+}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Play, Pause, Volume2 } from 'lucide-react';
 import { PodcastCard } from './PodcastCard';
+import {Link} from "react-router-dom";
 
 const podcasts = [
   {
@@ -34,6 +35,14 @@ export const PodcastSection = () => {
             />
           ))}
         </div>
+      </div>
+      <div className="text-center mt-8 mb-12">
+        <Link
+            to="/media"
+            className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          En savoir plus
+        </Link>
       </div>
     </div>
   );
