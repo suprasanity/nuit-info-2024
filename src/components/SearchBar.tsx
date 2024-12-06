@@ -5,7 +5,7 @@ interface SearchBarProps {
   onClose: () => void;
 }
 
-export const SearchBar: React.FC<SearchBarProps> = ({ onClose }) => {
+export const SearchBar: React.FC<SearchBarProps> = ({ }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {

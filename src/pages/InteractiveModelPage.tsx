@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import HumanBody from '../resources/human_body.svg';
 import '../style/InteractiveModel.css';
 

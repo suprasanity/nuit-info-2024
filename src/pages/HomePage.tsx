@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { InteractiveModel } from '../components/InteractiveModel';
 import { PodcastSection } from '../components/PodcastSection';

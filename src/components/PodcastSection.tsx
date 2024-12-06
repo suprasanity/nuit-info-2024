@@ -1,5 +1,4 @@
 import React from 'react';
-import { Play, Pause, Volume2 } from 'lucide-react';
 import { PodcastCard } from './PodcastCard';
 import {Link} from "react-router-dom";
 
