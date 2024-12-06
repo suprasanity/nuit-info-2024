@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
+import { MiniGame } from './MiniGame';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -9,14 +10,20 @@ interface LoginModalProps {
 export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showGame, setShowGame] = useState(false);
 
   if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
     console.log('Login attempt:', { username, password });
+    setShowGame(true);
   };
+
+  if (showGame) {
+    // Affiche le mini-jeu à la place de la modal
+    return <MiniGame />;
+  }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
