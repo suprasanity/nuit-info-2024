@@ -1,0 +1,13 @@
+/* File: src/style/MediaPage.css */
+.upload-button {
+    background-color: #1e40af; /* Blue-900 */
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s;
+    margin-top: 1rem;
+}
+
+.upload-button:hover {
+    background-color: #1d4ed8; /* Blue-600 */
+}
