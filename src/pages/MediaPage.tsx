@@ -4,27 +4,27 @@ import { ApiService } from "../service/ApiService";
 import '../style/MediaPage.css';
 import ErrorBoundary from '../components/ErrorBoundary';
 
-const apiService = new ApiService('https://race-for-water-api.yannjeanmaire.com');
+const apiService = new ApiService('https://race-for-water-api.yanneanmaire.com');
 
 export const MediaPage: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [fileNames, setFileNames] = useState<string[]>([]);
   const [, setSelectedFile] = useState<string | null>(null);
 
-  const fetchFileNames = async () => {
-    try {
-      const response = await apiService.get('/file_storage/all');
-      if (response && Array.isArray(response.files)) {
-        setFileNames(response.files);
-      } else {
-        console.error('Expected an array of file names');
-      }
-    } catch (error) {
-      console.error('Failed to fetch file names:', error);
-    }
-  };
-
   useEffect(() => {
+    const fetchFileNames = async () => {
+      try {
+        const response = await apiService.get('/file_storage/all');
+        if (response && Array.isArray(response.files)) {
+          setFileNames(response.files);
+        } else {
+          console.error('Expected an array of file names');
+        }
+      } catch (error) {
+        console.error('Failed to fetch file names:', error);
+      }
+    };
+
     fetchFileNames();
   }, []);
 
@@ -42,7 +42,6 @@ export const MediaPage: React.FC = () => {
       try {
         await apiService.post('/file_storage', formData);
         alert('File uploaded successfully');
-        fetchFileNames(); // Fetch file names after successful upload
       } catch (error) {
         console.error('File upload failed:', error);
         alert('File upload failed');
@@ -58,7 +57,7 @@ export const MediaPage: React.FC = () => {
 
   const renderMediaPlayer = (fileName: string) => {
     const fileExtension = fileName.split('.').pop();
-    const fileUrl = `https://race-for-water.yannjeanmaire.com/file_storage/${fileName}`;
+    const fileUrl = `https://race-for-water-api.yannjeanmaire.com/file_storage/${fileName}`;
 
     if (fileExtension === 'mp4' || fileExtension === 'mov' || fileExtension === 'avi') {
       return (
