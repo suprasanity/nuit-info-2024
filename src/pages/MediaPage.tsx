@@ -4,7 +4,7 @@ import { ApiService } from "../service/ApiService";
 import '../style/MediaPage.css';
 import ErrorBoundary from '../components/ErrorBoundary';
 
-const apiService = new ApiService('https://race-for-water-api.yanneanmaire.com');
+const apiService = new ApiService('https://race-for-water-api.yannjeanmaire.com');
 
 export const MediaPage: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
