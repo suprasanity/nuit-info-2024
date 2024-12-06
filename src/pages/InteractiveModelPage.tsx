@@ -27,6 +27,24 @@ const organInfos: OrganInfo[] = [
     title: "Poumons",
     description: "Permettent les échanges gazeux",
     oceanEquivalent: "Le phytoplancton produit 50% de l'oxygène que nous respirons, agissant comme les poumons de la planète."
+  },
+  {
+    id: "stomach",
+    title: "Estomac",
+    description: "Décompose et distribue les nutriments.",
+    oceanEquivalent: "Les écosystèmes marins, des micro-organismes aux prédateurs apex, assurent la répartition des ressources nutritives dans la chaîne alimentaire."
+  },
+  {
+    id: "kidneys",
+    title: "Reins",
+    description: "Filtrent le sang, éliminent les toxines, régulent l’eau et les sels minéraux.",
+    oceanEquivalent: "Les récifs coralliens, les mangroves et les herbiers marins agissent comme des filtres naturels, purifiant l’eau, et assurant la qualité de l’eau marine."
+  },
+  {
+    id: "large_intestine",
+    title: "Gros intestin",
+    description: "Assure l’élimination des toxines et des déchets.",
+    oceanEquivalent: "Les zones marines en bonne santé protègent l'écosystème océanique en filtrant les polluants, préservant la qualité de l'eau et protégeant la biodiversité marine."
   }
 ];
 

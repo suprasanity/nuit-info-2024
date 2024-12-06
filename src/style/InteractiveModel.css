@@ -30,11 +30,23 @@
 }
 .heart.absolute{
     left: 22vw;
-    top: 22vh;
+    top: 23vh;
 }
 .lungs.absolute{
     left: 20vw;
     top: 20vh;
+}
+.stomach.absolute{
+    left: 23vw;
+    top: 30vh;
+}
+.kidneys.absolute{
+    left: 24vw;
+    top: 34vh;
+}
+.large_intestine.absolute{
+    left: 20vw;
+    top: 36vh;
 }
 
 /* Ajustements pour les écrans plus petits (téléphones et tablettes) */
@@ -66,6 +78,18 @@
     .lungs.absolute{
         left: 41vw;
         top: 22vh;
+    }
+    .stomach.absolute{
+        left: 48vw;
+        top: 27.5vh;
+    }
+    .kidneys.absolute{
+        left: 52vw;
+        top: 30vh;
+    }
+    .large_intestine.absolute{
+        left: 40vw;
+        top: 32vh;
     }
 }
 
