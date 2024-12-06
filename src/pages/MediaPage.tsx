@@ -57,7 +57,7 @@ export const MediaPage: React.FC = () => {
 
   const renderMediaPlayer = (fileName: string) => {
     const fileExtension = fileName.split('.').pop();
-    const fileUrl = `https://race-for-water-api.yannjeanmaire.com/file_storage/${fileName}`;
+    const fileUrl = 'https://race-for-water-api.yannjeanmaire.com/file_storage/${fileName}';
 
     if (fileExtension === 'mp4' || fileExtension === 'mov' || fileExtension === 'avi') {
       return (
